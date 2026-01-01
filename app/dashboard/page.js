@@ -56,7 +56,7 @@ function Dashboard() {
             </div>
 
             {loading ? (
-                <div className='my-6 text-center'>Loading...</div>
+                <div className='my-6 text-center'>กำลังโหลด.../Loading...</div>
             ) : (
                 <>
                     <StatusList attendanceList={attendanceList} />

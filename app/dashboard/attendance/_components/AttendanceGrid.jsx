@@ -31,8 +31,8 @@ function AttendanceGrid({ attadanceList, selectedMonth, canEdit = false }) {
 
     useEffect(() => {
         const baseCols = [
-            { field: 'studentId', headerName: 'ID', filter: true, width: 80, pinned: 'left' },
-            { field: 'name', headerName: 'Name', filter: true, width: 150, pinned: 'left' },
+            { field: 'studentId', headerName: 'รหัส/ID', filter: true, width: 80, pinned: 'left' },
+            { field: 'name', headerName: 'ชื่อ/Name', filter: true, width: 150, pinned: 'left' },
         ];
 
         if (attadanceList && attadanceList.length > 0) {
@@ -98,7 +98,7 @@ function AttendanceGrid({ attadanceList, selectedMonth, canEdit = false }) {
      */
     const onMarkAttendance = (day, studentId, presentStatus) => {
         if (!canEdit) {
-            toast.error('You do not have permission to edit attendance');
+            toast.error('คุณไม่มีสิทธิ์แก้ไขการเข้าเรียน/You do not have permission to edit attendance');
             return;
         }
 
@@ -114,18 +114,18 @@ function AttendanceGrid({ attadanceList, selectedMonth, canEdit = false }) {
 
             GlobalApi.MarkAttendance(data).then(resp => {
                 console.log(resp);
-                toast("Student Id:" + studentId + " Marked as present");
+                toast("รหัสนักเรียน:" + studentId + " บันทึกเข้าเรียนแล้ว/Marked as present");
             }).catch(err => {
                 console.error(err);
-                toast.error("Failed to mark attendance");
+                toast.error("บันทึกไม่สำเร็จ/Failed to mark attendance");
             });
         } else {
             GlobalApi.MarkAbsent(studentId, day, date)
                 .then(resp => {
-                    toast("Student Id:" + studentId + " Marked as absent");
+                    toast("รหัสนักเรียน:" + studentId + " บันทึกขาดเรียน/Marked as absent");
                 }).catch(err => {
                     console.error(err);
-                    toast.error("Failed to mark absent");
+                    toast.error("บันทึกไม่สำเร็จ/Failed to mark absent");
                 });
         }
     }
@@ -148,7 +148,7 @@ function AttendanceGrid({ attadanceList, selectedMonth, canEdit = false }) {
     if (!attadanceList) {
         return (
             <div className='my-7 p-10 text-center border rounded-lg'>
-                <p className='text-muted-foreground'>Select a month and grade, then click Search to view attendance.</p>
+                <p className='text-muted-foreground'>เลือกเดือนและระดับชั้น แล้วกดค้นหาเพื่อดูการเข้าเรียน/Select a month and grade, then click Search to view attendance.</p>
             </div>
         );
     }
@@ -156,7 +156,9 @@ function AttendanceGrid({ attadanceList, selectedMonth, canEdit = false }) {
     if (attadanceList.length === 0) {
         return (
             <div className='my-7 p-10 text-center border rounded-lg'>
-                <p className='text-muted-foreground'>No students found for this grade. {canEdit ? 'Add students first.' : 'Contact an administrator.'}</p>
+                <p className='text-muted-foreground'>
+                    ไม่พบนักเรียนในระดับชั้นนี้/No students found for this grade. {canEdit ? 'กรุณาเพิ่มนักเรียนก่อน/Add students first.' : 'ติดต่อผู้ดูแลระบบ/Contact an administrator.'}
+                </p>
             </div>
         );
     }

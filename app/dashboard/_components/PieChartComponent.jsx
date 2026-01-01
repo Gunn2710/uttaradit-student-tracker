@@ -6,8 +6,8 @@ import { PieChart, Pie, Cell, Legend, Tooltip } from 'recharts'
 const COLORS = ['#4c8cf8', '#f87171'];
 
 const testData = [
-    { name: 'Present', value: 75 },
-    { name: 'Absent', value: 25 },
+    { name: 'เข้าเรียน/Present', value: 75 },
+    { name: 'ขาดเรียน/Absent', value: 25 },
 ];
 
 function PieChartComponent({ attendanceList }) {
@@ -58,8 +58,8 @@ function PieChartComponent({ attendanceList }) {
         presentPerc = Math.min(presentPerc, 100);
 
         return [
-            { name: 'Present', value: Number(presentPerc.toFixed(1)) },
-            { name: 'Absent', value: Number((100 - presentPerc).toFixed(1)) },
+            { name: 'เข้าเรียน/Present', value: Number(presentPerc.toFixed(1)) },
+            { name: 'ขาดเรียน/Absent', value: Number((100 - presentPerc).toFixed(1)) },
         ];
     };
 
@@ -67,7 +67,7 @@ function PieChartComponent({ attendanceList }) {
         return (
             <div className='border p-5 rounded-lg'>
                 <h2 className='font-bold text-lg mb-4'>การเข้าเรียนรายเดือน/Monthly Attendance</h2>
-                <div style={{ height: 300 }} className='flex items-center justify-center'>Loading...</div>
+                <div style={{ height: 300 }} className='flex items-center justify-center'>กำลังโหลด.../Loading...</div>
             </div>
         );
     }

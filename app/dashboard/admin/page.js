@@ -4,7 +4,7 @@ import { useUserRole } from '@/hooks/useUserRole'
 import { ROLES } from '@/lib/roles'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
-import { Shield, ShieldCheck, Eye, Loader2 } from 'lucide-react'
+import { Shield, ShieldCheck, Eye, Loader2, RefreshCw } from 'lucide-react'
 import Image from 'next/image'
 
 function AdminPage() {
@@ -27,10 +27,10 @@ function AdminPage() {
                 setUsers(data);
             } else {
                 const error = await response.json();
-                toast.error(error.error || 'Failed to fetch users');
+                toast.error(error.error || 'ไม่สามารถดึงข้อมูลผู้ใช้ได้/Failed to fetch users');
             }
         } catch (error) {
-            toast.error('Failed to fetch users');
+            toast.error('ไม่สามารถดึงข้อมูลผู้ใช้ได้/Failed to fetch users');
         } finally {
             setLoading(false);
         }
@@ -46,17 +46,17 @@ function AdminPage() {
             });
 
             if (response.ok) {
-                toast.success('User role updated successfully');
+                toast.success('อัพเดทบทบาทสำเร็จ/User role updated successfully');
                 // Update local state
                 setUsers(users.map(user => 
                     user.id === targetUserId ? { ...user, role: newRole } : user
                 ));
             } else {
                 const error = await response.json();
-                toast.error(error.error || 'Failed to update role');
+                toast.error(error.error || 'อัพเดทบทบาทไม่สำเร็จ/Failed to update role');
             }
         } catch (error) {
-            toast.error('Failed to update role');
+            toast.error('อัพเดทบทบาทไม่สำเร็จ/Failed to update role');
         } finally {
             setUpdating(null);
         }
@@ -70,6 +70,17 @@ function AdminPage() {
                 return <ShieldCheck className="h-4 w-4 text-green-500" />;
             default:
                 return <Eye className="h-4 w-4 text-gray-500" />;
+        }
+    };
+
+    const getRoleLabel = (userRole) => {
+        switch (userRole) {
+            case ROLES.ADMIN:
+                return 'ผู้ดูแล/Admin';
+            case ROLES.EDITOR:
+                return 'ผู้แก้ไข/Editor';
+            default:
+                return 'ผู้ชม/Viewer';
         }
     };
 
@@ -97,11 +108,11 @@ function AdminPage() {
             <div className="p-10">
                 <div className="border rounded-lg p-10 text-center">
                     <Shield className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-                    <h2 className="text-2xl font-bold mb-2">Access Denied</h2>
+                    <h2 className="text-2xl font-bold mb-2">ปฏิเสธการเข้าถึง/Access Denied</h2>
                     <p className="text-muted-foreground">
-                        You don't have permission to access this page.
+                        คุณไม่มีสิทธิ์เข้าถึงหน้านี้/You don't have permission to access this page.
                         <br />
-                        Only administrators can manage users.
+                        เฉพาะผู้ดูแลเท่านั้นที่สามารถจัดการผู้ใช้ได้/Only administrators can manage users.
                     </p>
                 </div>
             </div>
@@ -113,10 +124,11 @@ function AdminPage() {
             <div className="flex items-center justify-between mb-6">
                 <div>
                     <h2 className="text-2xl font-bold">การจัดการผู้ใช้/User Management</h2>
-                    <p className="text-muted-foreground">Approve users and manage their permissions</p>
+                    <p className="text-muted-foreground">อนุมัติผู้ใช้และจัดการสิทธิ์ของพวกเขา/Approve users and manage their permissions</p>
                 </div>
-                <Button onClick={fetchUsers} variant="outline">
-                    Refresh
+                <Button onClick={fetchUsers} variant="outline" className="flex items-center gap-2">
+                    <RefreshCw className="h-4 w-4" />
+                    รีเฟรช/Refresh
                 </Button>
             </div>
 
@@ -129,11 +141,11 @@ function AdminPage() {
                     <table className="w-full">
                         <thead className="bg-muted">
                             <tr>
-                                <th className="px-4 py-3 text-left">User</th>
-                                <th className="px-4 py-3 text-left">Email</th>
-                                <th className="px-4 py-3 text-left">Current Role</th>
-                                <th className="px-4 py-3 text-left">Joined</th>
-                                <th className="px-4 py-3 text-left">Actions</th>
+                                <th className="px-4 py-3 text-left">ผู้ใช้/User</th>
+                                <th className="px-4 py-3 text-left">อีเมล/Email</th>
+                                <th className="px-4 py-3 text-left">บทบาท/Role</th>
+                                <th className="px-4 py-3 text-left">วันที่สมัคร/Joined</th>
+                                <th className="px-4 py-3 text-left">การดำเนินการ/Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -159,11 +171,11 @@ function AdminPage() {
                                     <td className="px-4 py-3">
                                         <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${getRoleBadgeColor(user.role)}`}>
                                             {getRoleIcon(user.role)}
-                                            {user.role}
+                                            {getRoleLabel(user.role)}
                                         </span>
                                     </td>
                                     <td className="px-4 py-3 text-muted-foreground text-sm">
-                                        {new Date(user.createdAt).toLocaleDateString()}
+                                        {new Date(user.createdAt).toLocaleDateString('th-TH')}
                                     </td>
                                     <td className="px-4 py-3">
                                         <div className="flex gap-2">
@@ -177,7 +189,7 @@ function AdminPage() {
                                                     {updating === user.id ? (
                                                         <Loader2 className="h-4 w-4 animate-spin" />
                                                     ) : (
-                                                        'Approve as Editor'
+                                                        'อนุมัติเป็นผู้แก้ไข/Approve as Editor'
                                                     )}
                                                 </Button>
                                             )}
@@ -191,7 +203,7 @@ function AdminPage() {
                                                     {updating === user.id ? (
                                                         <Loader2 className="h-4 w-4 animate-spin" />
                                                     ) : (
-                                                        'Revoke Access'
+                                                        'เพิกถอนสิทธิ์/Revoke Access'
                                                     )}
                                                 </Button>
                                             )}
@@ -203,7 +215,7 @@ function AdminPage() {
                     </table>
                     {users.length === 0 && (
                         <div className="p-10 text-center text-muted-foreground">
-                            No users found
+                            ไม่พบผู้ใช้/No users found
                         </div>
                     )}
                 </div>
@@ -213,4 +225,3 @@ function AdminPage() {
 }
 
 export default AdminPage
-

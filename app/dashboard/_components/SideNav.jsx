@@ -47,15 +47,15 @@ function SideNav() {
 
     const getRoleBadge = () => {
         if (isGuest) {
-            return <span className="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200">Guest</span>;
+            return <span className="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200">แขก/Guest</span>;
         }
         switch (role) {
             case ROLES.ADMIN:
-                return <span className="text-xs px-2 py-0.5 rounded-full bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-200">Admin</span>;
+                return <span className="text-xs px-2 py-0.5 rounded-full bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-200">ผู้ดูแล/Admin</span>;
             case ROLES.EDITOR:
-                return <span className="text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-200">Editor</span>;
+                return <span className="text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-200">ผู้แก้ไข/Editor</span>;
             default:
-                return <span className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200">Viewer</span>;
+                return <span className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200">ผู้ชม/Viewer</span>;
         }
     };
 
@@ -111,7 +111,7 @@ function SideNav() {
                                 <LogIn className='w-4 h-4 text-slate-500' />
                             </div>
                             <div>
-                                <h2 className='text-sm font-bold'>Guest User</h2>
+                                <h2 className='text-sm font-bold'>ผู้ใช้แขก/Guest User</h2>
                                 <div className='mt-0.5'>
                                     {getRoleBadge()}
                                 </div>
@@ -119,7 +119,7 @@ function SideNav() {
                         </div>
                         <SignInButton mode="modal">
                             <Button size="sm" className="w-full">
-                                Sign In
+                                เข้าสู่ระบบ/Sign In
                             </Button>
                         </SignInButton>
                     </div>

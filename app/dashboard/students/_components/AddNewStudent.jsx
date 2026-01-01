@@ -43,12 +43,12 @@ function AddNewStudent({ refreshData }) {
                 reset();
                 refreshData();
                 setOpen(false);
-                toast('New Student Added !')
+                toast('เพิ่มนักเรียนใหม่แล้ว!/New Student Added!')
             }
             setLoading(false)
         }).catch(err => {
             console.error(err);
-            toast.error('Failed to add student');
+            toast.error('เพิ่มนักเรียนไม่สำเร็จ/Failed to add student');
             setLoading(false);
         })
     }
@@ -59,17 +59,17 @@ function AddNewStudent({ refreshData }) {
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>เพิ่มนักเรียน/Add Student</DialogTitle>
+                        <DialogTitle>เพิ่มนักเรียนใหม่/Add New Student</DialogTitle>
                         <DialogDescription asChild>
                             <div>
                                 <form onSubmit={handleSubmit(onSubmit)}>
                                     <div className='py-2'>
                                         <label className='text-foreground'>ชื่อ-นามสกุล/Full Name</label>
                                         <Input 
-                                            placeholder='ชื่อ-นามสกุล'
+                                            placeholder='ตัวอย่าง: สมชาย ใจดี'
                                             {...register('name', { required: true })}
                                         />
-                                        {errors.name && <span className='text-red-500 text-sm'>Name is required</span>}
+                                        {errors.name && <span className='text-red-500 text-sm'>กรุณากรอกชื่อ/Name is required</span>}
                                     </div>
                                     <div className='flex flex-col py-2'>
                                         <label className='text-foreground'>ระดับชั้น/Grade</label>
@@ -77,25 +77,25 @@ function AddNewStudent({ refreshData }) {
                                             className='p-3 border rounded-lg bg-background text-foreground'
                                             {...register('grade', { required: true })}
                                         >
-                                            <option value="">Select Grade</option>
+                                            <option value="">เลือกระดับชั้น/Select Grade</option>
                                             {grades.map((item, index) => (
                                                 <option key={index} value={item.grade}>{item.grade}</option>
                                             ))}
                                         </select>
-                                        {errors.grade && <span className='text-red-500 text-sm'>Grade is required</span>}
+                                        {errors.grade && <span className='text-red-500 text-sm'>กรุณาเลือกระดับชั้น/Grade is required</span>}
                                     </div>
                                     <div className='py-2'>
                                         <label className='text-foreground'>หมายเลขติดต่อ/Contact Number</label>
                                         <Input 
                                             type="tel" 
-                                            placeholder='ตัวอย่าง 098-765-4321'
+                                            placeholder='ตัวอย่าง: 098-765-4321'
                                             {...register('contact')} 
                                         />
                                     </div>
                                     <div className='py-2'>
                                         <label className='text-foreground'>ที่อยู่/Address</label>
                                         <Input 
-                                            placeholder='ตัวอย่าง 123 ถ.สุขุมวิท, คลองเตย'
+                                            placeholder='ตัวอย่าง: 123 ถ.สุขุมวิท, คลองเตย'
                                             {...register('address')} 
                                         />
                                     </div>

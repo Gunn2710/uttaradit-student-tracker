@@ -39,12 +39,12 @@ function StudentListTable({ studentList, refreshData, canEdit = false }) {
     const DeleteRecord = (id) => {
         GlobalApi.DeleteStudentRecord(id).then(resp => {
             if (resp) {
-                toast('Record deleted successfully!')
+                toast('ลบข้อมูลสำเร็จ!/Record deleted successfully!')
                 refreshData()
             }
         }).catch(err => {
             console.error(err);
-            toast.error('Failed to delete record');
+            toast.error('ลบข้อมูลไม่สำเร็จ/Failed to delete record');
         })
     }
 
@@ -60,10 +60,9 @@ function StudentListTable({ studentList, refreshData, canEdit = false }) {
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                     <AlertDialogHeader>
-                        <AlertDialogTitle>คุณแน่ใจอย่างแน่นอนหรือไม่?/ Are you absolutely sure?</AlertDialogTitle>
+                        <AlertDialogTitle>คุณแน่ใจอย่างแน่นอนหรือไม่?/Are you absolutely sure?</AlertDialogTitle>
                         <AlertDialogDescription>
-                            การดำเนินการนี้ไม่สามารถย้อนกลับได้ การกระทำนี้จะลบข้อมูลของคุณถาวรและนำข้อมูลของคุณออกจากเซิร์ฟเวอร์ของเรา/ This action cannot be undone. This will permanently delete your record
-                            and remove your data from our servers.
+                            การดำเนินการนี้ไม่สามารถย้อนกลับได้ การกระทำนี้จะลบข้อมูลของคุณถาวรและนำข้อมูลของคุณออกจากเซิร์ฟเวอร์ของเรา/This action cannot be undone. This will permanently delete your record and remove your data from our servers.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
@@ -77,16 +76,16 @@ function StudentListTable({ studentList, refreshData, canEdit = false }) {
 
     const colDefs = useMemo(() => {
         const cols = [
-            { field: "id", headerName: "ID", filter: true, width: 80 },
-            { field: "name", headerName: "Name", filter: true, flex: 1 },
-            { field: "grade", headerName: "Grade", filter: true, width: 100 },
-            { field: "address", headerName: "Address", filter: true, flex: 1 },
-            { field: "contact", headerName: "Contact", filter: true, width: 120 },
+            { field: "id", headerName: "รหัส/ID", filter: true, width: 80 },
+            { field: "name", headerName: "ชื่อ-นามสกุล/Name", filter: true, flex: 1 },
+            { field: "grade", headerName: "ระดับชั้น/Grade", filter: true, width: 120 },
+            { field: "address", headerName: "ที่อยู่/Address", filter: true, flex: 1 },
+            { field: "contact", headerName: "เบอร์ติดต่อ/Contact", filter: true, width: 140 },
         ];
         
         // Only add action column if user can edit
         if (canEdit) {
-            cols.push({ field: 'action', headerName: "Action", cellRenderer: CustomButtons, width: 100 });
+            cols.push({ field: 'action', headerName: "การดำเนินการ/Action", cellRenderer: CustomButtons, width: 130 });
         }
         
         return cols;
@@ -110,7 +109,9 @@ function StudentListTable({ studentList, refreshData, canEdit = false }) {
     if (!studentList || studentList.length === 0) {
         return (
             <div className='my-7 p-10 text-center border rounded-lg'>
-                <p className='text-muted-foreground'>No students found. {canEdit ? 'Add a new student to get started.' : 'Contact an administrator to add students.'}</p>
+                <p className='text-muted-foreground'>
+                    ไม่พบนักเรียน/No students found. {canEdit ? 'เพิ่มนักเรียนใหม่เพื่อเริ่มต้น/Add a new student to get started.' : 'ติดต่อผู้ดูแลระบบเพื่อเพิ่มนักเรียน/Contact an administrator to add students.'}
+                </p>
             </div>
         )
     }
@@ -121,7 +122,7 @@ function StudentListTable({ studentList, refreshData, canEdit = false }) {
                 <Search className="h-5 w-5 text-muted-foreground" />
                 <input
                     type='text'
-                    placeholder='Search on Anything...'
+                    placeholder='ค้นหา.../Search...'
                     className='outline-none w-full bg-transparent'
                     onChange={(event) => setSearchInput(event.target.value)}
                 />
