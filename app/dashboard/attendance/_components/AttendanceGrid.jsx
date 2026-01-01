@@ -18,11 +18,15 @@ function AttendanceGrid({ attadanceList, selectedMonth }) {
     const [rowData, setRowData] = useState([]);
     const [colDefs, setColDefs] = useState([]);
 
-    const daysInMonth = (year, month) => new Date(year, month + 1, 0).getDate();
-    const numberOfDays = daysInMonth(
-        moment(selectedMonth).format('yyyy'),
-        moment(selectedMonth).format('MM')
-    );
+    // Calculate days in month properly
+    const getDaysInMonth = () => {
+        if (!selectedMonth) return 31;
+        const year = moment(selectedMonth).year();
+        const month = moment(selectedMonth).month(); // 0-indexed
+        return new Date(year, month + 1, 0).getDate();
+    };
+
+    const numberOfDays = getDaysInMonth();
     const daysArrays = Array.from({ length: numberOfDays }, (_, i) => i + 1);
 
     useEffect(() => {
@@ -58,13 +62,13 @@ function AttendanceGrid({ attadanceList, selectedMonth }) {
             setColDefs(baseCols);
             setRowData([]);
         }
-    }, [attadanceList, selectedMonth]);
+    }, [attadanceList, selectedMonth, numberOfDays]);
 
     /**
      * Used to check if user present or not
      */
     const isPresent = (studentId, day) => {
-        const result = attadanceList?.find(item => item.day == day && item.studentId == studentId);
+        const result = attadanceList?.find(item => item.day === day && item.studentId === studentId);
         return result ? true : false;
     }
 
@@ -78,7 +82,11 @@ function AttendanceGrid({ attadanceList, selectedMonth }) {
         attadanceList?.forEach(record => {
             if (!existingUser.has(record.studentId)) {
                 existingUser.add(record.studentId);
-                uniqueRecord.push({ ...record });
+                uniqueRecord.push({ 
+                    studentId: record.studentId,
+                    name: record.name,
+                    grade: record.grade
+                });
             }
         });
 
@@ -88,14 +96,14 @@ function AttendanceGrid({ attadanceList, selectedMonth }) {
     /**
      * Used to mark student attendance
      */
-    const onMarkAttendace = (day, studentId, presentStatus) => {
-        const date = moment(selectedMonth).format('MM/yyyy');
+    const onMarkAttendance = (day, studentId, presentStatus) => {
+        const date = moment(selectedMonth).format('MM/YYYY');
         
         if (presentStatus) {
             const data = {
-                day: day,
+                day: parseInt(day),
                 studentId: studentId,
-                present: presentStatus,
+                present: true,
                 date: date
             };
 
@@ -140,6 +148,14 @@ function AttendanceGrid({ attadanceList, selectedMonth }) {
         );
     }
 
+    if (attadanceList.length === 0) {
+        return (
+            <div className='my-7 p-10 text-center border rounded-lg'>
+                <p className='text-muted-foreground'>No students found for this grade. Add students first.</p>
+            </div>
+        );
+    }
+
     return (
         <div className='my-5'>
             <div style={{ height: 500, width: '100%' }}>
@@ -148,7 +164,7 @@ function AttendanceGrid({ attadanceList, selectedMonth }) {
                     rowData={rowData}
                     columnDefs={colDefs}
                     defaultColDef={defaultColDef}
-                    onCellValueChanged={(e) => onMarkAttendace(e.colDef.field, e.data.studentId, e.newValue)}
+                    onCellValueChanged={(e) => onMarkAttendance(e.colDef.field, e.data.studentId, e.newValue)}
                     pagination={pagination}
                     paginationPageSize={paginationPageSize}
                     paginationPageSizeSelector={paginationPageSizeSelector}
