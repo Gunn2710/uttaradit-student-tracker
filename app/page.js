@@ -1,17 +1,38 @@
-"use client"
 import { Button } from "@/components/ui/button";
-import { LoginLink, RegisterLink } from "@kinde-oss/kinde-auth-nextjs";
-import Image from "next/image";
+import { SignInButton, SignUpButton, SignedIn, SignedOut } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
-import { useEffect } from "react";
+import { auth } from "@clerk/nextjs/server";
 
-export default function Home() {
-  useEffect(()=>{
-    redirect('/api/auth/login?post_login_redirect_url=/dashboard')
-  },[])
+export default async function Home() {
+  const { userId } = await auth();
+  
+  if (userId) {
+    redirect('/dashboard');
+  }
+
   return (
-   <div>
-      {/* <LoginLink>Login</LoginLink> */}
-   </div>
+    <div className="min-h-screen flex flex-col items-center justify-center gap-6 bg-background">
+      <h1 className="text-4xl font-bold text-foreground">
+        Uttaradit Student Tracker
+      </h1>
+      <p className="text-muted-foreground text-lg">
+        Track student attendance with ease
+      </p>
+      <div className="flex gap-4">
+        <SignedOut>
+          <SignInButton mode="modal">
+            <Button variant="default">Sign In</Button>
+          </SignInButton>
+          <SignUpButton mode="modal">
+            <Button variant="outline">Sign Up</Button>
+          </SignUpButton>
+        </SignedOut>
+        <SignedIn>
+          <Button onClick={() => redirect('/dashboard')}>
+            Go to Dashboard
+          </Button>
+        </SignedIn>
+      </div>
+    </div>
   );
 }

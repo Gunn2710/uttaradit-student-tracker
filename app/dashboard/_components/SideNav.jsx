@@ -1,5 +1,5 @@
 "use client"
-import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
+import { useUser } from '@clerk/nextjs'
 import { GraduationCap, Hand, LayoutIcon } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -8,7 +8,7 @@ import React, { useEffect } from 'react'
 
 function SideNav() {
 
-  const {user}=useKindeBrowserClient();
+  const { user } = useUser();
   const menuList=[
     {
       id:1,
@@ -44,7 +44,7 @@ function SideNav() {
       <hr className='my-5'></hr>
 
       {menuList.map((menu,index)=>(
-        <Link href={menu.path}>
+        <Link href={menu.path} key={menu.id}>
           <h2 className={`flex items-center gap-3 text-md p-4
           text-slate-500
           hover:bg-primary
@@ -61,13 +61,15 @@ function SideNav() {
       ))}
 
       <div className='flex gap-2 items-center bottom-5 fixed p-2'>
-        <Image src={user?.picture} width={35}
-        height={35}
-        alt='user'
-        className='rounded-full'/>
+        {user?.imageUrl && (
+          <Image src={user.imageUrl} width={35}
+          height={35}
+          alt='user'
+          className='rounded-full'/>
+        )}
         <div>
-          <h2 className='text-sm font-bold'>{user?.given_name} {user?.family_name}</h2>
-          <h2 className='text-xs text-slate-400'>{user?.email}</h2>
+          <h2 className='text-sm font-bold'>{user?.firstName} {user?.lastName}</h2>
+          <h2 className='text-xs text-slate-400'>{user?.primaryEmailAddress?.emailAddress}</h2>
         </div>
       </div>
 

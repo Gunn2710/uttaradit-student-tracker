@@ -1,15 +1,18 @@
-import { NextResponse } from 'next/server'
-import {getKindeServerSession} from "@kinde-oss/kinde-auth-nextjs/server";
-// This function can be marked `async` if using `await` inside
-export async function middleware(request) {
-    const { isAuthenticated } = getKindeServerSession();
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-    if (!(await isAuthenticated())) {
-        return NextResponse.redirect(new URL('/api/auth/login?post_login_redirect_url=/dashboard', request.url))
-    }
-}
- 
-// See "Matching Paths" below to learn more
+const isProtectedRoute = createRouteMatcher(["/dashboard(.*)"]);
+
+export default clerkMiddleware(async (auth, req) => {
+  if (isProtectedRoute(req)) {
+    await auth.protect();
+  }
+});
+
 export const config = {
-  matcher: '/dashboard/:path*',
-}
+  matcher: [
+    // Skip Next.js internals and all static files, unless found in search params
+    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
+    // Always run for API routes
+    "/(api|trpc)(.*)",
+  ],
+};

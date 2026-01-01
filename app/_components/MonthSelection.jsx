@@ -7,37 +7,41 @@ import {
 } from "@/components/ui/popover"
 import { Button } from '@/components/ui/button'
 import { CalendarDays } from 'lucide-react'
-import {addMonths} from 'date-fns';
-import moment from 'moment/moment';
+import { addMonths } from 'date-fns';
+import moment from 'moment';
 import { Calendar } from "@/components/ui/calendar"
 
+function MonthSelection({ selectedMonth }) {
+    const nextMonths = addMonths(new Date(), 0);
+    const [month, setMonth] = useState(nextMonths);
+    const [open, setOpen] = useState(false);
 
-function MonthSelection({selectedMonth}) {
-    const today=new Date();
+    const handleMonthChange = (value) => {
+        setMonth(value);
+        selectedMonth(value);
+    };
 
-    const nextMonths=addMonths(new Date(),0);
-    const [month,setMonth]=useState(nextMonths);
     return (
         <div>
-            <Popover>
+            <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
-                    <Button variant="outline" 
-                    className="flex gap-2 items-center text-slate-500">
-                        <CalendarDays className='h-5 w-5'/>
+                    <Button 
+                        variant="outline"
+                        className="flex gap-2 items-center"
+                    >
+                        <CalendarDays className='h-5 w-5' />
                         {moment(month).format('MMM yyyy')}
-                        </Button>
+                    </Button>
                 </PopoverTrigger>
-                <PopoverContent>
-
+                <PopoverContent className="w-auto p-0" align="start">
                     <Calendar
                         mode="single"
                         month={month}
-                        onMonthChange={(value)=>{selectedMonth(value);setMonth(value)}}
+                        onMonthChange={handleMonthChange}
                         className="flex flex-1 justify-center"
                     />
                 </PopoverContent>
             </Popover>
-
         </div>
     )
 }
