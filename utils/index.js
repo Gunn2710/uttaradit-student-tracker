@@ -1,12 +1,6 @@
-import { drizzle } from "drizzle-orm/mysql2";
-import mysql from "mysql2/promise";
+import { createClient } from '@supabase/supabase-js';
 
-const connection = await mysql.createPool({
-  host: process.env.NEXT_PUBLIC_HOST,
-  user: process.env.NEXT_PUBLIC_USER,
-  database: process.env.NEXT_PUBLIC_USER,
-  password:process.env.NEXT_DB_PASSWORD,
-  port:'3306'
-});
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-export const db = drizzle(connection);
+export const supabase = createClient(supabaseUrl, supabaseKey);

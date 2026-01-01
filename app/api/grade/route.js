@@ -1,10 +1,14 @@
-import { db } from "@/utils";
-import { GRADES } from "@/utils/schema";
+import { supabase } from "@/utils";
 import { NextResponse } from "next/server";
 
-export async function GET(req){
-    
-    const result=await db.select().from(GRADES);
+export async function GET(req) {
+    const { data, error } = await supabase
+        .from('grades')
+        .select('*');
 
-   return NextResponse.json(result);
+    if (error) {
+        return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    return NextResponse.json(data);
 }
