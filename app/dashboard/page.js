@@ -1,5 +1,4 @@
 "use client"
-import { useTheme } from 'next-themes'
 import React, { useEffect, useState } from 'react'
 import MonthSelection from '../_components/MonthSelection'
 import GradeSelect from '../_components/GradeSelect'
@@ -7,99 +6,76 @@ import GlobalApi from '../_services/GlobalApi'
 import moment from 'moment'
 import StatusList from './_components/StatusList'
 import BarChartComponent from './_components/BarChartComponent'
-import { Pie, PieChart } from 'recharts'
 import PieChartComponent from './_components/PieChartComponent'
-const data01 = [
-  {
-    "name": "Group A",
-    "value": 400
-  },
-  {
-    "name": "Group B",
-    "value": 300
-  },
-  {
-    "name": "Group C",
-    "value": 300
-  },
-  {
-    "name": "Group D",
-    "value": 200
-  },
-  {
-    "name": "Group E",
-    "value": 278
-  },
-  {
-    "name": "Group F",
-    "value": 189
-  }
-];
 
 function Dashboard() {
-    const { setTheme } = useTheme()
-    const [selectedMonth,setSelectedMonth]=useState();
-    const [selectedGrade,setSelectedGrade]=useState('5th');
-    const [attendaceList,setAttendaceList]=useState();
-    const [totalPresentData,setTotalPresentData]=useState([]);
-    useEffect(()=>{
-      
-        GetTotalPresentCountByDay();
-        getStudentAttendance();
-       
-    },[selectedMonth||selectedGrade])
+    const [selectedMonth, setSelectedMonth] = useState(new Date());
+    const [selectedGrade, setSelectedGrade] = useState('1st');
+    const [attendanceList, setAttendanceList] = useState([]);
+    const [totalPresentData, setTotalPresentData] = useState([]);
+    const [loading, setLoading] = useState(false);
 
-    useEffect(()=>{
+    // Fetch data when month or grade changes
+    useEffect(() => {
+        if (selectedMonth && selectedGrade) {
+            fetchDashboardData();
+        }
+    }, [selectedMonth, selectedGrade]);
 
-      GetTotalPresentCountByDay();
-      getStudentAttendance();
-     
-  },[selectedGrade])
+    const fetchDashboardData = () => {
+        setLoading(true);
+        const month = moment(selectedMonth).format('MM/YYYY');
+        
+        Promise.all([
+            GlobalApi.GetAttendanceList(selectedGrade, month),
+            GlobalApi.TotalPresentCountByDay(month, selectedGrade)
+        ])
+        .then(([attendanceResp, presentCountResp]) => {
+            console.log('Attendance:', attendanceResp.data);
+            console.log('Present count:', presentCountResp.data);
+            setAttendanceList(attendanceResp.data || []);
+            setTotalPresentData(presentCountResp.data || []);
+        })
+        .catch(err => {
+            console.error('Error fetching dashboard data:', err);
+        })
+        .finally(() => {
+            setLoading(false);
+        });
+    };
 
+    return (
+        <div className='p-10'>
+            <div className='flex items-center justify-between flex-wrap gap-4'>
+                <h2 className='font-bold text-2xl'>แดชบอร์ด/Dashboard</h2>
 
-  /**
-   * Used to get Student Attendace for Give Month and Date
-   */
-    const getStudentAttendance=()=>{
-      
-      GlobalApi.GetAttendanceList(selectedGrade,moment(selectedMonth).format('MM/yyyy'))
-      .then(resp=>{
-        setAttendaceList(resp.data)
-      })
-    }
+                <div className='flex items-center gap-4'>
+                    <MonthSelection selectedMonth={setSelectedMonth} />
+                    <GradeSelect selectedGrade={(v) => setSelectedGrade(v)} />
+                </div>
+            </div>
 
-    const GetTotalPresentCountByDay=()=>{
-      
-      GlobalApi.TotalPresentCountByDay(moment(selectedMonth).format('MM/yyyy'),selectedGrade)
-      .then(resp=>{
-        setTotalPresentData(resp.data);
-      })
-    }
+            {loading ? (
+                <div className='my-6 text-center'>Loading...</div>
+            ) : (
+                <>
+                    <StatusList attendanceList={attendanceList} />
 
-  return (
-    <div className='p-10'>
-      <div className='flex items-center justify-between'>
-          <h2 className='font-bold text-2xl'>แดชบอร์ด/Dashboard</h2>
-
-          <div className='flex items-center gap-4'>
-            <MonthSelection selectedMonth={setSelectedMonth} />
-            <GradeSelect selectedGrade={(v)=>{setSelectedGrade(v);console.log(v)}}/>
-          </div>
+                    <div className='grid grid-cols-1 md:grid-cols-3 gap-5'>
+                        <div className='md:col-span-2'>
+                            <BarChartComponent 
+                                attendanceList={attendanceList}
+                                totalPresentData={totalPresentData}
+                            />
+                        </div>
+                        <div>
+                            <PieChartComponent attendanceList={attendanceList} />
+                        </div>
+                    </div>
+                </>
+            )}
         </div>
-
-        <StatusList attendaceList={attendaceList} />
-
-        <div className='grid grid-cols-1 md:grid-cols-3 gap-5'>
-          <div className='md:col-span-2'>
-            <BarChartComponent attendaceList={attendaceList}
-            totalPresentData={totalPresentData}/>
-          </div>
-          <div>
-            <PieChartComponent  attendaceList={attendaceList} />
-          </div>
-        </div>
-    </div>
-  )
+    )
 }
 
 export default Dashboard
