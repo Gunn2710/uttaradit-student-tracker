@@ -25,7 +25,7 @@ const pagination = true;
 const paginationPageSize = 10;
 const paginationPageSizeSelector = [25, 50, 100];
 
-function StudentListTable({ studentList, refreshData }) {
+function StudentListTable({ studentList, refreshData, canEdit = false }) {
     const gridRef = useRef(null);
     const [rowData, setRowData] = useState([]);
     const [searchInput, setSearchInput] = useState('');
@@ -49,6 +49,8 @@ function StudentListTable({ studentList, refreshData }) {
     }
 
     const CustomButtons = (props) => {
+        if (!canEdit) return null;
+        
         return (
             <AlertDialog>
                 <AlertDialogTrigger asChild>
@@ -73,14 +75,22 @@ function StudentListTable({ studentList, refreshData }) {
         )
     }
 
-    const colDefs = useMemo(() => [
-        { field: "id", headerName: "ID", filter: true, width: 80 },
-        { field: "name", headerName: "Name", filter: true, flex: 1 },
-        { field: "grade", headerName: "Grade", filter: true, width: 100 },
-        { field: "address", headerName: "Address", filter: true, flex: 1 },
-        { field: "contact", headerName: "Contact", filter: true, width: 120 },
-        { field: 'action', headerName: "Action", cellRenderer: CustomButtons, width: 100 }
-    ], []);
+    const colDefs = useMemo(() => {
+        const cols = [
+            { field: "id", headerName: "ID", filter: true, width: 80 },
+            { field: "name", headerName: "Name", filter: true, flex: 1 },
+            { field: "grade", headerName: "Grade", filter: true, width: 100 },
+            { field: "address", headerName: "Address", filter: true, flex: 1 },
+            { field: "contact", headerName: "Contact", filter: true, width: 120 },
+        ];
+        
+        // Only add action column if user can edit
+        if (canEdit) {
+            cols.push({ field: 'action', headerName: "Action", cellRenderer: CustomButtons, width: 100 });
+        }
+        
+        return cols;
+    }, [canEdit]);
 
     const defaultColDef = useMemo(() => ({
         sortable: true,
@@ -100,7 +110,7 @@ function StudentListTable({ studentList, refreshData }) {
     if (!studentList || studentList.length === 0) {
         return (
             <div className='my-7 p-10 text-center border rounded-lg'>
-                <p className='text-muted-foreground'>No students found. Add a new student to get started.</p>
+                <p className='text-muted-foreground'>No students found. {canEdit ? 'Add a new student to get started.' : 'Contact an administrator to add students.'}</p>
             </div>
         )
     }

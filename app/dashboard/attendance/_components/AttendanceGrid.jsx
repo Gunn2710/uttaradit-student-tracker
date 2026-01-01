@@ -13,7 +13,7 @@ const pagination = true;
 const paginationPageSize = 10;
 const paginationPageSizeSelector = [25, 50, 100];
 
-function AttendanceGrid({ attadanceList, selectedMonth }) {
+function AttendanceGrid({ attadanceList, selectedMonth, canEdit = false }) {
     const gridRef = useRef(null);
     const [rowData, setRowData] = useState([]);
     const [colDefs, setColDefs] = useState([]);
@@ -38,12 +38,12 @@ function AttendanceGrid({ attadanceList, selectedMonth }) {
         if (attadanceList && attadanceList.length > 0) {
             const userList = getUniqueRecord();
 
-            // Create day columns
+            // Create day columns - only editable if canEdit
             const dayCols = daysArrays.map((date) => ({
                 field: date.toString(),
                 headerName: date.toString(),
                 width: 50,
-                editable: true,
+                editable: canEdit, // Only allow editing if user has permission
                 cellRenderer: (params) => {
                     return params.value ? '✓' : '';
                 }
@@ -62,7 +62,7 @@ function AttendanceGrid({ attadanceList, selectedMonth }) {
             setColDefs(baseCols);
             setRowData([]);
         }
-    }, [attadanceList, selectedMonth, numberOfDays]);
+    }, [attadanceList, selectedMonth, numberOfDays, canEdit]);
 
     /**
      * Used to check if user present or not
@@ -97,6 +97,11 @@ function AttendanceGrid({ attadanceList, selectedMonth }) {
      * Used to mark student attendance
      */
     const onMarkAttendance = (day, studentId, presentStatus) => {
+        if (!canEdit) {
+            toast.error('You do not have permission to edit attendance');
+            return;
+        }
+
         const date = moment(selectedMonth).format('MM/YYYY');
         
         if (presentStatus) {
@@ -151,7 +156,7 @@ function AttendanceGrid({ attadanceList, selectedMonth }) {
     if (attadanceList.length === 0) {
         return (
             <div className='my-7 p-10 text-center border rounded-lg'>
-                <p className='text-muted-foreground'>No students found for this grade. Add students first.</p>
+                <p className='text-muted-foreground'>No students found for this grade. {canEdit ? 'Add students first.' : 'Contact an administrator.'}</p>
             </div>
         );
     }

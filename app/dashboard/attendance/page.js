@@ -6,12 +6,14 @@ import { Button } from '@/components/ui/button'
 import moment from 'moment'
 import React, { useState, useEffect } from 'react'
 import AttendanceGrid from './_components/AttendanceGrid'
+import { useUserRole } from '@/hooks/useUserRole'
 
 function Attendance() {
     const [selectedMonth, setSelectedMonth] = useState(new Date());
     const [selectedGrade, setSelectedGrade] = useState('1st');
     const [attendanceList, setAttendanceList] = useState();
     const [loading, setLoading] = useState(false);
+    const { canEdit } = useUserRole();
 
     // Auto-search on initial load
     useEffect(() => {
@@ -40,8 +42,8 @@ function Attendance() {
     return (
         <div className='p-10'>
             <h2 className='text-2xl font-bold'>การเข้าเรียน/Attendance</h2>
-            {/* Search option  */}
 
+            {/* Search option  */}
             <div className='flex gap-5 my-5 p-5 border rounded-lg shadow-sm flex-wrap'>
                 <div className='flex gap-2 items-center'>
                     <label>เดือน/Month:</label>
@@ -63,6 +65,7 @@ function Attendance() {
             <AttendanceGrid 
                 attadanceList={attendanceList}
                 selectedMonth={selectedMonth}
+                canEdit={canEdit}
             />
         </div>
     )
