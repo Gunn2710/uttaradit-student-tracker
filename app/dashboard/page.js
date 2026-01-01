@@ -45,11 +45,11 @@ function Dashboard() {
     };
 
     return (
-        <div className='p-10'>
-            <div className='flex items-center justify-between flex-wrap gap-4'>
-                <h2 className='font-bold text-2xl'>แดชบอร์ด/Dashboard</h2>
+        <div className='p-4 md:p-10'>
+            <div className='flex flex-col sm:flex-row sm:items-center justify-between gap-4'>
+                <h2 className='font-bold text-xl md:text-2xl'>แดชบอร์ด/Dashboard</h2>
 
-                <div className='flex items-center gap-4'>
+                <div className='flex items-center gap-2 md:gap-4 flex-wrap'>
                     <MonthSelection selectedMonth={setSelectedMonth} />
                     <GradeSelect selectedGrade={(v) => setSelectedGrade(v)} />
                 </div>

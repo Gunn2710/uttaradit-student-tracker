@@ -40,17 +40,17 @@ function Attendance() {
     }
 
     return (
-        <div className='p-10'>
-            <h2 className='text-2xl font-bold'>การเข้าเรียน/Attendance</h2>
+        <div className='p-4 md:p-10'>
+            <h2 className='text-xl md:text-2xl font-bold'>การเข้าเรียน/Attendance</h2>
 
             {/* Search option  */}
-            <div className='flex gap-5 my-5 p-5 border rounded-lg shadow-sm flex-wrap'>
+            <div className='flex gap-3 md:gap-5 my-5 p-3 md:p-5 border rounded-lg shadow-sm flex-wrap'>
                 <div className='flex gap-2 items-center'>
-                    <label>เดือน/Month:</label>
+                    <label className='text-sm md:text-base'>เดือน/Month:</label>
                     <MonthSelection selectedMonth={(value) => setSelectedMonth(value)} />
                 </div>
                 <div className='flex gap-2 items-center'>
-                    <label>ระดับชั้น/Grade:</label>
+                    <label className='text-sm md:text-base'>ระดับชั้น/Grade:</label>
                     <GradeSelect selectedGrade={(v) => setSelectedGrade(v)} />
                 </div>
                 <Button

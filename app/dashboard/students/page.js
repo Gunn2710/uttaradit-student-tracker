@@ -20,11 +20,11 @@ function Student() {
     }
 
     return (
-        <div className='p-7'>
-            <h2 className='font-bold text-2xl flex justify-between items-center'>
-                นักเรียน/Students
+        <div className='p-4 md:p-7'>
+            <div className='flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3'>
+                <h2 className='font-bold text-xl md:text-2xl'>นักเรียน/Students</h2>
                 {canEdit && <AddNewStudent refreshData={GetAllStudents} />}
-            </h2>
+            </div>
 
             <StudentListTable 
                 studentList={studentList}
